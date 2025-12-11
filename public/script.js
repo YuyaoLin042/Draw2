@@ -2,6 +2,7 @@ const socket = io();
 const canvas = document.querySelector('.whiteboard');
 const context = canvas.getContext('2d');
 
+// 这里必须能找到 index.html 里的 ID，否则会报错导致画不了
 const colorPicker = document.getElementById('colorPicker');
 const brushBtn = document.getElementById('brushBtn');
 const eraserBtn = document.getElementById('eraserBtn');
@@ -11,17 +12,17 @@ let savedColor = '#000000';
 let drawing = false;
 let isErasing = false;
 
-// --- 工具栏逻辑 ---
-colorPicker.addEventListener('input', (e) => {
-  savedColor = e.target.value;
-  if (!isErasing) {
-    current.color = savedColor;
-  }
-  switchToBrush();
-});
+// --- 事件监听 ---
+if(colorPicker){
+  colorPicker.addEventListener('input', (e) => {
+    savedColor = e.target.value;
+    if (!isErasing) current.color = savedColor;
+    switchToBrush();
+  });
+}
 
-brushBtn.addEventListener('click', switchToBrush);
-eraserBtn.addEventListener('click', switchToEraser);
+if(brushBtn) brushBtn.addEventListener('click', switchToBrush);
+if(eraserBtn) eraserBtn.addEventListener('click', switchToEraser);
 
 function switchToBrush() {
   isErasing = false;
@@ -33,14 +34,13 @@ function switchToBrush() {
 
 function switchToEraser() {
   isErasing = true;
-  current.color = '#ffffff'; 
+  current.color = '#ffffff'; // 橡皮就是白色画笔
   eraserBtn.classList.add('active');
   brushBtn.classList.remove('active');
   canvas.style.cursor = 'default'; 
 }
 
-// --- 画画核心逻辑 ---
-
+// --- 画画基础功能 ---
 canvas.addEventListener('mousedown', onMouseDown, false);
 canvas.addEventListener('mouseup', onMouseUp, false);
 canvas.addEventListener('mouseout', onMouseUp, false);
@@ -51,9 +51,7 @@ canvas.addEventListener('touchend', onMouseUp, false);
 canvas.addEventListener('touchcancel', onMouseUp, false);
 canvas.addEventListener('touchmove', throttle(onThrottle, 10), false);
 
-// 监听服务器发来的画画数据 (包括历史记录回放，也是走的这个通道)
 socket.on('drawing', onDrawingEvent);
-
 window.addEventListener('resize', onResize, false);
 onResize();
 
@@ -63,11 +61,11 @@ function drawLine(x0, y0, x1, y1, color, emit){
   context.lineTo(x1, y1);
   context.strokeStyle = color;
   
-  // 橡皮擦逻辑：如果是白色，加粗
+  // 橡皮擦加粗
   if (color.toLowerCase() === '#ffffff' || color.toLowerCase() === '#fff') {
-      context.lineWidth = 20; // 橡皮擦大一点
+    context.lineWidth = 20;
   } else {
-      context.lineWidth = 2;
+    context.lineWidth = 2;
   }
   
   context.lineCap = 'round';
@@ -94,13 +92,11 @@ function onMouseDown(e){
   current.x = getX(e);
   current.y = getY(e);
 }
-
 function onMouseUp(e){
   if (!drawing) { return; }
   drawing = false;
   drawLine(current.x, current.y, getX(e), getY(e), current.color, true);
 }
-
 function onThrottle(e){
   if (!drawing) { return; }
   let clientX = getX(e);
@@ -109,8 +105,6 @@ function onThrottle(e){
   current.x = clientX;
   current.y = clientY;
 }
-
-// 辅助函数：处理鼠标和触摸坐标
 function getX(e) { return e.clientX || (e.touches && e.touches[0].clientX); }
 function getY(e) { return e.clientY || (e.touches && e.touches[0].clientY); }
 
@@ -119,12 +113,10 @@ function onDrawingEvent(data){
   const h = canvas.height;
   drawLine(data.x0 * w, data.y0 * h, data.x1 * w, data.y1 * h, data.color);
 }
-
 function onResize() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-
 function throttle(callback, delay) {
   let previousCall = new Date().getTime();
   return function() {
