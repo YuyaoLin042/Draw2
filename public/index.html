@@ -1,13 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <title>Online Doodle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>双人实时画板</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas id="board"></canvas>
+  <canvas class="whiteboard"></canvas>
+  
+  <div class="colors">
+    <div class="color black" style="background: black;"></div>
+    <div class="color red" style="background: red;"></div>
+    <div class="color green" style="background: green;"></div>
+    <div class="color blue" style="background: blue;"></div>
+    <div class="color yellow" style="background: yellow;"></div>
+  </div>
+
   <script src="/socket.io/socket.io.js"></script>
-  <script src="client.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
