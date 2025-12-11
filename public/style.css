@@ -5,33 +5,60 @@ body, html {
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow: hidden; /* 防止出现滚动条 */
+  overflow: hidden;
+  background-color: #f0f2f5;
 }
 
 .whiteboard {
   height: 100%;
   width: 100%;
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
+  top: 0; left: 0;
+  background-color: #ffffff;
   cursor: crosshair;
 }
 
-.colors {
+/* 工具栏样式 */
+.toolbar {
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  z-index: 100;
 }
 
-.color {
-  width: 30px;
-  height: 30px;
+.tool-group { display: flex; align-items: center; gap: 10px; }
+
+/* 颜色选择器圆圈化 */
+input[type="color"] {
+  -webkit-appearance: none;
+  border: none;
+  width: 36px; height: 36px;
+  padding: 0;
   border-radius: 50%;
+  overflow: hidden;
   cursor: pointer;
-  border: 2px solid #fff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
+input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+input[type="color"]::-webkit-color-swatch { border: none; }
+
+/* 按钮样式 */
+.tool-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: #f0f2f5;
+  color: #555;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; justify-content: center; align-items: center;
+}
+.tool-btn:hover { background: #e4e6eb; }
+.tool-btn.active { background: #007bff; color: white; }
