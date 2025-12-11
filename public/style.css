@@ -1,11 +1,37 @@
-body {
+* { box-sizing: border-box; }
+
+body, html {
   margin: 0;
-  overflow: hidden;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* 防止出现滚动条 */
 }
 
-canvas {
-  background: white;
-  width: 100vw;
-  height: 100vh;
-  display: block;
+.whiteboard {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  cursor: crosshair;
+}
+
+.colors {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.color {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
